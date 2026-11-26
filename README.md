@@ -22,8 +22,13 @@ As decisões e o porquê de cada uma estão em [docs/adr](docs/adr/README.md).
 
 ## Fase atual
 
-**Fase 0 · Fundação:** solution, building blocks, Aspire, gateway, CI e ADRs.
-Próxima: **Fase 1 · Vitrine** (Catalog, Store, Inventory, Search).
+**Fase 1 · Vitrine** (Catalog, Store, Inventory, Search), um PR por serviço. Pronto: **Catalog**.
+
+| Serviço | Rotas (pelo gateway) |
+|---|---|
+| Catalog | `POST /api/catalog/cards` · `GET /api/catalog/cards/{id}` · `GET /api/catalog/cards?game=&set=&name=&page=&pageSize=` · `GET /api/catalog/health` |
+
+Na Fase 1 as rotas são abertas, sem login ([ADR 0008](docs/adr/0008-fase-1-sem-autenticacao.md)).
 
 ## Como rodar
 

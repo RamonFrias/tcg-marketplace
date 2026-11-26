@@ -11,3 +11,5 @@ Formato e regras em [0000](0000-registro-de-decisoes.md). Para registrar uma dec
 | [0004](0004-mensageria-com-service-bus-e-outbox.md) | Mensageria com Service Bus, Outbox e consumidores idempotentes | Aceito | 2026-11-26 |
 | [0005](0005-clean-architecture-ddd-e-tdd.md) | Clean Architecture, DDD e TDD em cada serviço | Aceito | 2026-11-26 |
 | [0006](0006-fluxo-git-e-ci.md) | Fluxo trunk-based com PR revisado e CI no GitHub Actions | Aceito | 2026-11-26 |
+| [0007](0007-servico-catalog.md) | Serviço Catalog: o card canônico | Aceito | 2026-11-26 |
+| [0008](0008-fase-1-sem-autenticacao.md) | Fase 1 sem autenticação | Aceito | 2026-11-26 |

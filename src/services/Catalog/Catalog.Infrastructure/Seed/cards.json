@@ -1,0 +1,28 @@
+[
+  { "game": "Magic", "setCode": "dem1", "setName": "Demonstração: Alvorada", "collectorNumber": "001", "name": "Dragão de Cristal", "rarity": "Mythic" },
+  { "game": "Magic", "setCode": "dem1", "setName": "Demonstração: Alvorada", "collectorNumber": "014", "name": "Sentinela do Farol", "rarity": "Rare" },
+  { "game": "Magic", "setCode": "dem1", "setName": "Demonstração: Alvorada", "collectorNumber": "102", "name": "Raio Cintilante", "rarity": "Common" },
+  { "game": "Magic", "setCode": "dem2", "setName": "Demonstração: Ruínas", "collectorNumber": "033", "name": "Arquivista das Ruínas", "rarity": "Uncommon" },
+  { "game": "Magic", "setCode": "dem2", "setName": "Demonstração: Ruínas", "collectorNumber": "077", "name": "Golem de Musgo", "rarity": "Common" },
+
+  { "game": "Pokemon", "setCode": "dem1", "setName": "Demonstração: Origem", "collectorNumber": "4/102", "name": "Lagarto de Fogo", "rarity": "Holo Rare" },
+  { "game": "Pokemon", "setCode": "dem1", "setName": "Demonstração: Origem", "collectorNumber": "58/102", "name": "Rato Elétrico", "rarity": "Common" },
+  { "game": "Pokemon", "setCode": "dem1", "setName": "Demonstração: Origem", "collectorNumber": "16/102", "name": "Tartaruga das Marés", "rarity": "Rare" },
+  { "game": "Pokemon", "setCode": "dem2", "setName": "Demonstração: Cavernas", "collectorNumber": "SV001", "name": "Morcego Prateado", "rarity": "Secret Rare" },
+  { "game": "Pokemon", "setCode": "dem2", "setName": "Demonstração: Cavernas", "collectorNumber": "045", "name": "Pedregulho Vivo", "rarity": "Uncommon" },
+
+  { "game": "YuGiOh", "setCode": "dem1", "setName": "Demonstração: Duelo", "collectorNumber": "DEM1-EN001", "name": "Cavaleiro do Eclipse", "rarity": "Ultra Rare" },
+  { "game": "YuGiOh", "setCode": "dem1", "setName": "Demonstração: Duelo", "collectorNumber": "DEM1-EN020", "name": "Armadilha de Espelhos", "rarity": "Common" },
+  { "game": "YuGiOh", "setCode": "dem2", "setName": "Demonstração: Abismo", "collectorNumber": "DEM2-EN007", "name": "Serpente do Abismo", "rarity": "Super Rare" },
+  { "game": "YuGiOh", "setCode": "dem2", "setName": "Demonstração: Abismo", "collectorNumber": "DEM2-EN050", "name": "Feitiço da Maré Baixa", "rarity": "Rare" },
+
+  { "game": "OnePiece", "setCode": "dem1", "setName": "Demonstração: Mar Aberto", "collectorNumber": "DEM01-001", "name": "Capitã da Névoa", "rarity": "Leader" },
+  { "game": "OnePiece", "setCode": "dem1", "setName": "Demonstração: Mar Aberto", "collectorNumber": "DEM01-013", "name": "Navegador Estrelado", "rarity": "Super Rare" },
+  { "game": "OnePiece", "setCode": "dem2", "setName": "Demonstração: Arquipélago", "collectorNumber": "DEM02-021", "name": "Cozinheiro do Convés", "rarity": "Common" },
+  { "game": "OnePiece", "setCode": "dem2", "setName": "Demonstração: Arquipélago", "collectorNumber": "DEM02-060", "name": "Tempestade Repentina", "rarity": "Uncommon" },
+
+  { "game": "Lorcana", "setCode": "dem1", "setName": "Demonstração: Tinta Viva", "collectorNumber": "1/204", "name": "Aprendiz de Ilustrador", "rarity": "Legendary" },
+  { "game": "Lorcana", "setCode": "dem1", "setName": "Demonstração: Tinta Viva", "collectorNumber": "88/204", "name": "Lanterna Encantada", "rarity": "Rare" },
+  { "game": "Lorcana", "setCode": "dem2", "setName": "Demonstração: Reino de Papel", "collectorNumber": "15/204", "name": "Raposa de Origami", "rarity": "Common" },
+  { "game": "Lorcana", "setCode": "dem2", "setName": "Demonstração: Reino de Papel", "collectorNumber": "140/204", "name": "Castelo Dobrável", "rarity": "Super Rare" }
+]
