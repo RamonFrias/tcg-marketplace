@@ -12,9 +12,8 @@ Pedido: `$ARGUMENTS`.
 
 - Serviço: `src/services/<Svc>`. DbContext em `<Svc>.Infrastructure/Persistence/<Svc>DbContext.cs`.
 - Confirme que o build passa: `dotnet build src/services/<Svc>/<Svc>.Infrastructure`.
-- Confirme que a ferramenta existe: `dotnet ef --version`.
-  - Se faltar, avise e sugira `dotnet tool install --global dotnet-ef` ou, melhor, um tool manifest local (`dotnet new tool-manifest` e `dotnet tool install dotnet-ef`).
-  - Não instale sem o usuário pedir.
+- A ferramenta é local do repositório (`dotnet-tools.json`, versão igual ao EF Core): rode `dotnet tool restore` uma vez e confira com `dotnet ef --version`.
+- O código gerado em `Migrations/` fica fora das regras de estilo (`generated_code = true` no `.editorconfig`). Depois de gerar, rode `dotnet format whitespace . --folder --include <pasta Migrations>` para as quebras de linha ficarem LF.
 - A geração usa o `DesignTimeDbContextFactory` do Infrastructure, que lê `ConnectionStrings__<svc>db`. Para gerar a migration não precisa de banco rodando. Para aplicar, precisa.
 
 ## 2. Gerar

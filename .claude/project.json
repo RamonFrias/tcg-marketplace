@@ -1,7 +1,7 @@
 {
   "nome": "tcg-marketplace",
-  "faseAtual": "Fase 0 · Fundação",
-  "proximaFase": "Fase 1 · Vitrine (Catalog, Store, Inventory, Search)",
+  "faseAtual": "Fase 1 · Vitrine (Catalog, Store, Inventory, Search), sem login (ADR 0008)",
+  "proximaFase": "Fase 2 · Compra (Identity, Cart, Ordering, Payment, saga do checkout)",
   "decisoes": "https://claude.ai/artifact/Ya48rKCHD1YXfGVPuZHvWf",
   "servicos": [
     "Catalog",

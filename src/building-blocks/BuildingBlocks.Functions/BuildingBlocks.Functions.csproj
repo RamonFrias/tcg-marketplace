@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Borda HTTP comum dos Function Apps: Result/Error → ProblemDetails, validação → 400, leitura de JSON. -->
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks.SharedKernel\BuildingBlocks.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

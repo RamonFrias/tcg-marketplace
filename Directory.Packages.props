@@ -28,6 +28,27 @@
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
   </ItemGroup>
 
+  <ItemGroup Label="Azure Functions (isolated worker)">
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker" Version="2.52.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.1" />
+  </ItemGroup>
+
+  <!-- EF Core 11 só suporta .NET 11; o projeto está no .NET 10 (LTS), então fica na linha 10. -->
+  <ItemGroup Label="Dados (EF Core + Postgres)">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.15" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.4" />
+    <PackageVersion Include="EFCore.NamingConventions" Version="10.0.1" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.6.5" />
+  </ItemGroup>
+
+  <ItemGroup Label="Validação">
+    <PackageVersion Include="FluentValidation" Version="12.2.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+  </ItemGroup>
+
   <ItemGroup Label="Testes">
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
     <!-- xUnit v3 roda pelo Microsoft.Testing.Platform (global.json → test.runner); não usa VSTest. -->

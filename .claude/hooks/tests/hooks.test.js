@@ -296,7 +296,7 @@ test('contracts-guard entende atributos com parênteses e ignora comentários', 
 // ---------- 9. session-context ----------
 test('session-context informa fase e ferramentas', { timeout: 60000 }, () => {
   const text = context(runHook('session-context.js', root, { hook_event_name: 'SessionStart' })) || '';
-  assert.match(text, /Fase 0/);
+  assert.match(text, /Fase atual: Fase \d/);
   assert.match(text, /dotnet \d+\.\d+/);
   assert.match(text, /docker/);
 });

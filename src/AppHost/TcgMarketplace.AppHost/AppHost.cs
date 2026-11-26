@@ -1,11 +1,11 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-// Postgres único com um banco por serviço (cada serviço chama postgres.AddDatabase("<svc>db")).
+// Postgres único com um banco por serviço (ADR 0003).
 var postgres = builder.AddPostgres("postgres")
     .WithDataVolume("tcg-marketplace-postgres")
     .WithLifetime(ContainerLifetime.Persistent);
 
-// Service Bus Emulator: um tópico por evento de integração, uma subscription por serviço consumidor.
+// Service Bus Emulator: um tópico por evento de integração, uma subscription por serviço consumidor (ADR 0004).
 var messaging = builder.AddAzureServiceBus("messaging")
     .RunAsEmulator(emulator => emulator.WithLifetime(ContainerLifetime.Persistent));
 
@@ -25,12 +25,18 @@ var opensearch = builder.AddContainer("opensearch", "opensearchproject/opensearc
     .WithVolume("tcg-marketplace-opensearch", "/usr/share/opensearch/data")
     .WithLifetime(ContainerLifetime.Persistent);
 
-// Caminho relativo à pasta do AppHost (Aspire 17: AddDotnetProject substitui AddProject<T>).
-var gateway = builder.AddDotnetProject("gateway", "../../Gateway/TcgMarketplace.Gateway/TcgMarketplace.Gateway.csproj")
-    .WithExternalHttpEndpoints();
+// Serviços: caminhos relativos à pasta do AppHost (Aspire 17).
+var catalogDb = postgres.AddDatabase("catalogdb");
+var catalog = builder.AddAzureFunctionsProject("catalog-functions", "../../services/Catalog/Catalog.Functions/Catalog.Functions.csproj")
+    .WithReference(catalogDb)
+    .WaitFor(catalogDb)
+    .WithHostStorage(storage);
 
-// Os serviços entram aqui a partir da Fase 1 (skill novo-servico), usando postgres, messaging, storage e opensearch,
-// e o gateway recebe .WithReference(<servico>) para rotear /api/<servico>/...
-_ = (postgres, messaging, storage, opensearch, gateway);
+builder.AddDotnetProject("gateway", "../../Gateway/TcgMarketplace.Gateway/TcgMarketplace.Gateway.csproj")
+    .WithExternalHttpEndpoints()
+    .WithReference(catalog);
+
+// Ainda sem consumidor nesta fase: entram com os próximos serviços (Inventory, Search).
+_ = (messaging, opensearch);
 
 await builder.Build().RunAsync();

@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\building-blocks\BuildingBlocks.SharedKernel\BuildingBlocks.SharedKernel.csproj" />
     <ProjectReference Include="..\..\src\building-blocks\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\src\building-blocks\BuildingBlocks.Functions\BuildingBlocks.Functions.csproj" />
   </ItemGroup>
 
 </Project>

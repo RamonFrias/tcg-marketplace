@@ -2,6 +2,7 @@
   <Folder Name="/building-blocks/">
     <Project Path="src/building-blocks/BuildingBlocks.Application/BuildingBlocks.Application.csproj" />
     <Project Path="src/building-blocks/BuildingBlocks.Contracts/BuildingBlocks.Contracts.csproj" />
+    <Project Path="src/building-blocks/BuildingBlocks.Functions/BuildingBlocks.Functions.csproj" />
     <Project Path="src/building-blocks/BuildingBlocks.SharedKernel/BuildingBlocks.SharedKernel.csproj" />
   </Folder>
   <Folder Name="/platform/">
@@ -9,7 +10,15 @@
     <Project Path="src/Gateway/TcgMarketplace.Gateway/TcgMarketplace.Gateway.csproj" />
     <Project Path="src/ServiceDefaults/TcgMarketplace.ServiceDefaults/TcgMarketplace.ServiceDefaults.csproj" />
   </Folder>
+  <Folder Name="/services/" />
+  <Folder Name="/services/Catalog/">
+    <Project Path="src/services/Catalog/Catalog.Application/Catalog.Application.csproj" />
+    <Project Path="src/services/Catalog/Catalog.Domain/Catalog.Domain.csproj" />
+    <Project Path="src/services/Catalog/Catalog.Functions/Catalog.Functions.csproj" />
+    <Project Path="src/services/Catalog/Catalog.Infrastructure/Catalog.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+    <Project Path="tests/Catalog.Tests/Catalog.Tests.csproj" />
   </Folder>
 </Solution>

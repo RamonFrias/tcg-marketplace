@@ -20,7 +20,9 @@ Confira se já existem. O que faltar, crie antes, numa etapa separada e avisando
 - `src/building-blocks/BuildingBlocks.Application`: `ICommand`, `IQuery`, handlers, `IUnitOfWork` e `AddHandlersFromAssembly`.
 - `src/building-blocks/BuildingBlocks.Contracts`: `IIntegrationEvent`.
 - `src/ServiceDefaults/TcgMarketplace.ServiceDefaults`, `src/AppHost/TcgMarketplace.AppHost` (Aspire 17) e `src/Gateway/TcgMarketplace.Gateway` (YARP).
-- Testes rodam pelo Microsoft.Testing.Platform (`global.json`): `dotnet test <projeto>`, sem `--nologo`. Projetos de teste usam só `xunit.v3` e `NSubstitute`, sem `Microsoft.NET.Test.Sdk`.
+- Testes rodam pelo Microsoft.Testing.Platform (`global.json`): `dotnet test <projeto>`, sem `--nologo`. Projetos de teste usam só `xunit.v3` e `NSubstitute`, sem `Microsoft.NET.Test.Sdk`. Chamada assíncrona com `CancellationToken` em teste usa `TestContext.Current.CancellationToken` (o analisador xUnit1051 vira erro).
+- Modelo pronto para copiar: o serviço **Catalog** (`src/services/Catalog`) tem as 4 camadas, a Function de health, o `DesignTimeDbContextFactory`, o seed e o registro no AppHost e no gateway.
+- Pacotes: EF Core **10** (o 11 exige .NET 11), `Aspire.Npgsql.EntityFrameworkCore.PostgreSQL` 13.6.5, `EFCore.NamingConventions` para snake_case. O `dotnet-ef` é ferramenta local (`dotnet tool restore`). A borda HTTP usa `BuildingBlocks.Functions` (`HttpResults.Problem`, `HttpResults.Validation`, `ReadJsonAsync`).
 
 ## Estrutura a gerar
 
