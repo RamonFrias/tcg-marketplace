@@ -1,0 +1,39 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.idea/
+TestResults/
+*.trx
+coverage/
+
+# Azure Functions
+local.settings.json
+
+# Dados locais dos emuladores e logs
+__azurite_*
+__blobstorage__/
+__queuestorage__/
+*.log
+
+# Certificados e chaves
+*.pfx
+*.pem
+*.key
+*.p12
+
+# Segredos e variáveis locais
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Claude Code: preferências pessoais (o .claude/settings.json do time é versionado)
+.claude/settings.local.json
+
+# Sistema
+Thumbs.db
+.DS_Store

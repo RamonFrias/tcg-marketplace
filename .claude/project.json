@@ -1,0 +1,18 @@
+{
+  "nome": "tcg-marketplace",
+  "faseAtual": "Fase 0 · Fundação",
+  "proximaFase": "Fase 1 · Vitrine (Catalog, Store, Inventory, Search)",
+  "decisoes": "https://claude.ai/artifact/Ya48rKCHD1YXfGVPuZHvWf",
+  "servicos": [
+    "Catalog",
+    "Store",
+    "Inventory",
+    "Search",
+    "Cart",
+    "Ordering",
+    "Payment",
+    "Shipping",
+    "Notification",
+    "Identity"
+  ]
+}
