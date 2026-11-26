@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Abstrações da camada Application (commands, queries, unidade de trabalho). Sem infraestrutura. -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BuildingBlocks.SharedKernel\BuildingBlocks.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

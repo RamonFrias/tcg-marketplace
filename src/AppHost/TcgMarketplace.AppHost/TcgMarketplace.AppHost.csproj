@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Orquestração local: sobe Postgres, Service Bus Emulator, Azurite, OpenSearch, gateway e os Function Apps.
+    Aspire 17: o AppHost usa Microsoft.NET.Sdk + Aspire.Hosting.AppHost/Dotnet (o Aspire.AppHost.Sdk ficou obsoleto,
+    ver https://aspire.dev/diagnostics/aspire012/). Projetos .NET entram por caminho em AddDotnetProject, sem ProjectReference.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UserSecretsId>tcg-marketplace-apphost</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Dotnet" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+    <PackageReference Include="Aspire.Hosting.Azure.ServiceBus" />
+    <PackageReference Include="Aspire.Hosting.Azure.Storage" />
+  </ItemGroup>
+
+</Project>

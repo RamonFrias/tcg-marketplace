@@ -91,7 +91,7 @@ function check(evt) {
 
     const args = kind === 'build'
       ? ['build', proj, '--nologo', '-v', 'q', '-clp:ErrorsOnly']
-      : ['test', proj, '--nologo', '-v', 'q'];
+      : ['test', '--project', proj, '--no-progress']; // Microsoft.Testing.Platform (global.json): não aceita --nologo
     const r = L.run('dotnet', args, { cwd: root, timeout: Math.min(STEP_TIMEOUT_MS, remaining) });
     if (r.error && r.error.code === 'ENOENT') return 'done'; // dotnet não instalado
     if (r.error && r.error.code === 'ETIMEDOUT') { skipped.push(`${kind} ${name} (tempo esgotado)`); continue; }

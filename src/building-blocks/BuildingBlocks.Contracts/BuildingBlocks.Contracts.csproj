@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Contratos públicos de eventos de integração entre serviços. Só tipos simples, sem lógica. -->
+</Project>
