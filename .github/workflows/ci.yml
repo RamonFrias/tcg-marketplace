@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Build e testes da solution inteira. Quando os serviços existirem (Fase 1), este job ganha uma matriz
+  # por serviço com filtro de caminhos (ver docs/adr/0006-fluxo-git-e-ci.md).
+  dotnet:
+    name: Build e testes (.NET)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore tcg-marketplace.slnx
+
+      - name: Build
+        run: dotnet build tcg-marketplace.slnx --no-restore --configuration Release
+
+      - name: Testes
+        run: dotnet test tcg-marketplace.slnx --no-build --configuration Release
+
+  hooks:
+    name: Testes dos hooks do Claude Code
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      # Os testes dos hooks formatam e compilam C# de verdade (format-cs, build-test-on-stop).
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Testes dos hooks
+        run: node --test .claude/hooks/tests/hooks.test.js

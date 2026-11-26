@@ -28,13 +28,13 @@ Em `tests/<Svc>.Tests/Domain/<Pasta>/<Nome>Tests.cs`:
 ## 3. Implementar (green)
 
 Padrões do projeto (BuildingBlocks.SharedKernel):
-- Agregado herda `AggregateRoot<TId>`. Value object é `sealed record` ou herda `ValueObject`.
+- Agregado herda `AggregateRoot<TId>`. Value object é `sealed record` com construtor privado, propriedades só com `get` (sem `init`, para o `with` não furar a validação) e fábrica `Create` que devolve `Result<T>`. Modelo: `Money` no SharedKernel.
 - Ids fortemente tipados: `public readonly record struct ListingId(Guid Value)`.
 - **Construtor privado + fábrica estática** que valida: `public static Result<Listing> Create(...)`. Nada de `new` com estado inválido.
 - Setters privados. Mudança de estado só por métodos com nome de negócio (`Reserve`, `Release`, `ChangePrice`), nunca `SetQuantity`.
 - Erro de regra retorna `Result.Failure(Error)`, com erros estáticos por agregado (`ListingErrors.InsufficientStock`). Exceção só para bug de programação.
 - Eventos de domínio no passado (`ListingCreated`, `StockReserved`), adicionados com `RaiseDomainEvent(...)`.
-- Dinheiro sempre `Money(decimal Amount, string Currency)`, nunca `decimal` solto. Moeda padrão `BRL`.
+- Dinheiro sempre `Money` do SharedKernel (`Money.Create(valor, "BRL")` ou `Money.Brl(valor)`), nunca `decimal` solto. Moeda padrão `BRL`.
 - Sem atributos de EF, JSON ou validação no Domain. O mapeamento fica no Infrastructure (`IEntityTypeConfiguration`).
 
 Rode os testes até passarem.

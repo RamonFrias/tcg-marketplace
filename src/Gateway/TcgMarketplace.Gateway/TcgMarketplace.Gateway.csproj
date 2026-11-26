@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- Porta de entrada única da API: roteia /api/<servico>/... para o Function App de cada serviço (YARP). -->
+
+  <ItemGroup>
+    <PackageReference Include="Yarp.ReverseProxy" />
+    <PackageReference Include="Microsoft.Extensions.ServiceDiscovery.Yarp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ServiceDefaults\TcgMarketplace.ServiceDefaults\TcgMarketplace.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

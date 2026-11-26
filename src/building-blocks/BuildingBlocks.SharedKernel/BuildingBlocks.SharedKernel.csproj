@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Base do domínio de todos os serviços: sem dependência de framework ou infraestrutura. -->
+</Project>

@@ -16,9 +16,11 @@ Confira se já existem. O que faltar, crie antes, numa etapa separada e avisando
 - `tcg-marketplace.slnx` na raiz.
 - `Directory.Build.props`: `net10.0`, `Nullable=enable`, `ImplicitUsings=enable`, `TreatWarningsAsErrors=true`.
 - `Directory.Packages.props`: Central Package Management. Versões **só** aqui; nos `.csproj` vai `<PackageReference Include="X" />` sem versão.
-- `src/building-blocks/BuildingBlocks.SharedKernel`: `Entity<TId>`, `AggregateRoot<TId>`, `ValueObject`, `IDomainEvent`, `Result`/`Error`.
+- `src/building-blocks/BuildingBlocks.SharedKernel`: `Entity<TId>`, `AggregateRoot<TId>`, `IDomainEvent`, `Result`/`Error`, `Money`. Value objects são `sealed record`.
+- `src/building-blocks/BuildingBlocks.Application`: `ICommand`, `IQuery`, handlers, `IUnitOfWork` e `AddHandlersFromAssembly`.
 - `src/building-blocks/BuildingBlocks.Contracts`: `IIntegrationEvent`.
-- `src/AppHost/TcgMarketplace.AppHost` (Aspire) e `src/Gateway/TcgMarketplace.Gateway` (YARP).
+- `src/ServiceDefaults/TcgMarketplace.ServiceDefaults`, `src/AppHost/TcgMarketplace.AppHost` (Aspire 17) e `src/Gateway/TcgMarketplace.Gateway` (YARP).
+- Testes rodam pelo Microsoft.Testing.Platform (`global.json`): `dotnet test <projeto>`, sem `--nologo`. Projetos de teste usam só `xunit.v3` e `NSubstitute`, sem `Microsoft.NET.Test.Sdk`.
 
 ## Estrutura a gerar
 
@@ -56,15 +58,18 @@ Regras que os hooks também cobram (`layer-guard`):
 6. **Functions:**
    - `Program.cs` com `FunctionsApplication.CreateBuilder(args)`, `ConfigureFunctionsWebApplication()`, `AddServiceDefaults()` (se o ServiceDefaults existir), `AddApplication()` e `AddInfrastructure()`;
    - uma Function `Health` em `GET api/<svc>/health`.
-7. **Banco e AppHost.** Em `src/AppHost/.../AppHost.cs`:
+7. **Banco e AppHost.** Em `src/AppHost/TcgMarketplace.AppHost/AppHost.cs` (Aspire 17):
    ```csharp
-   var db = postgres.AddDatabase("<svc>db");
-   var svc = builder.AddAzureFunctionsProject<Projects.<Svc>_Functions>("<svc>-functions")
-       .WithReference(db).WaitFor(db)
+   var <svc>Db = postgres.AddDatabase("<svc>db");
+   var <svc> = builder.AddAzureFunctionsProject("<svc>-functions", "../../services/<Svc>/<Svc>.Functions/<Svc>.Functions.csproj")
+       .WithReference(<svc>Db).WaitFor(<svc>Db)
        .WithReference(messaging)          // Service Bus emulator, se o serviço publica/consome eventos
        .WithHostStorage(storage);
+   gateway.WithReference(<svc>);
    ```
-   A API do Aspire muda entre versões: antes de escrever, peça ao agent `pesquisador-dotnet` os nomes certos dos métodos para a versão usada no `Directory.Packages.props`.
+   - O caminho é relativo à pasta do AppHost. O AppHost **não** tem `ProjectReference` para os serviços.
+   - Adicione `Aspire.Hosting.Azure.Functions` ao `.csproj` do AppHost (a versão já está no `Directory.Packages.props`).
+   - A API do Aspire muda entre versões. Antes de escrever, peça ao agent `pesquisador-dotnet` os nomes certos dos métodos (`AddAzureFunctionsProject`, `WithHostStorage`) para a versão usada no `Directory.Packages.props`.
 8. **Gateway:** rota YARP `/api/<svc>/{**catch-all}` → cluster `<svc>-functions`, com service discovery do Aspire.
 9. **Testes:** um teste de fumaça em `tests/<Svc>.Tests`. Por exemplo, o `AddApplication` resolve sem erro.
 10. **Verificar:** `dotnet build tcg-marketplace.slnx` e `dotnet test tests/<Svc>.Tests` passando.

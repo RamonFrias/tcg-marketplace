@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/building-blocks/">
+    <Project Path="src/building-blocks/BuildingBlocks.Application/BuildingBlocks.Application.csproj" />
+    <Project Path="src/building-blocks/BuildingBlocks.Contracts/BuildingBlocks.Contracts.csproj" />
+    <Project Path="src/building-blocks/BuildingBlocks.SharedKernel/BuildingBlocks.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/platform/">
+    <Project Path="src/AppHost/TcgMarketplace.AppHost/TcgMarketplace.AppHost.csproj" />
+    <Project Path="src/Gateway/TcgMarketplace.Gateway/TcgMarketplace.Gateway.csproj" />
+    <Project Path="src/ServiceDefaults/TcgMarketplace.ServiceDefaults/TcgMarketplace.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+  </Folder>
+</Solution>

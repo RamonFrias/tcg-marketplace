@@ -1,0 +1,60 @@
+namespace BuildingBlocks.SharedKernel;
+
+/// <summary>
+/// Resultado de uma operação que pode falhar por regra de negócio ou validação.
+/// Exceção fica reservada para bug de programação; erro esperado volta como <see cref="Error"/>.
+/// </summary>
+public class Result
+{
+    protected Result(bool isSuccess, Error error)
+    {
+        ArgumentNullException.ThrowIfNull(error);
+
+        if (isSuccess && error != Error.None)
+        {
+            throw new ArgumentException("Um resultado de sucesso não pode ter erro.", nameof(error));
+        }
+
+        if (!isSuccess && error == Error.None)
+        {
+            throw new ArgumentException("Um resultado de falha precisa de um erro.", nameof(error));
+        }
+
+        IsSuccess = isSuccess;
+        Error = error;
+    }
+
+    public bool IsSuccess { get; }
+
+    public bool IsFailure => !IsSuccess;
+
+    public Error Error { get; }
+
+    public static Result Success() => new(true, Error.None);
+
+    public static Result Failure(Error error) => new(false, error);
+
+    public static Result<TValue> Success<TValue>(TValue value) => new(value, true, Error.None);
+
+    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, error);
+}
+
+/// <summary>Resultado com valor. <see cref="Value"/> só pode ser lido em caso de sucesso.</summary>
+public sealed class Result<TValue> : Result
+{
+    private readonly TValue? _value;
+
+    internal Result(TValue? value, bool isSuccess, Error error)
+        : base(isSuccess, error)
+    {
+        _value = value;
+    }
+
+    public TValue Value => IsSuccess
+        ? _value!
+        : throw new InvalidOperationException($"Não há valor em um resultado de falha ({Error.Code}).");
+
+    public static implicit operator Result<TValue>(TValue value) => Success(value);
+
+    public static implicit operator Result<TValue>(Error error) => Failure<TValue>(error);
+}
