@@ -37,6 +37,6 @@ Ajuste pequeno de código não vale ADR. Se for o caso, diga isso ao usuário.
 
 ## Decisões já tomadas
 
-As decisões iniciais do projeto estão na página de decisões (link em `.claude/project.json` → `decisoes`). Quando um ADR formalizar uma delas, cite que veio de lá.
+As decisões do projeto estão em `docs/adr/decisoes.md` (apontado em `.claude/project.json` → `decisoes`). Quando um ADR formalizar uma delas, cite-a e preencha a coluna ADR da linha correspondente nesse arquivo. Se a decisão mudar, atualize a linha lá também.
 
 Mostre ao usuário o caminho do arquivo e um resumo de uma linha.

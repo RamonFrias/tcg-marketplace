@@ -51,7 +51,7 @@ L.main(async (evt) => {
       'Avise o usuário antes de qualquer tarefa que precise deles.'
     );
   }
-  if (cfg.decisoes) lines.push(`- Decisões de arquitetura registradas em: ${cfg.decisoes}`);
+  if (cfg.decisoes) lines.push(`- Decisões do projeto (fonte da verdade): ${cfg.decisoes}; o porquê de cada uma nos ADRs de docs/adr`);
 
   L.addContext('SessionStart', lines.join('\n'));
 });

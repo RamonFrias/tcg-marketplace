@@ -1,6 +1,6 @@
 # tcg-marketplace
 
-Marketplace de cards colecionáveis (Magic, Pokémon, Yu-Gi-Oh!, One Piece, Lorcana) com várias lojas: o **Catalog** guarda o card canônico (um por jogo + coleção + número) e cada loja vende **ofertas** dele (condição, idioma, foil, preço, estoque) no Inventory. Projeto de estudo de microsserviços em **C# / .NET 10 com Azure Functions**, rodando local com **Aspire 17**. O porquê de cada decisão está em [docs/adr](docs/adr/README.md); a fase atual, em `.claude/project.json`.
+Marketplace de cards colecionáveis (Magic, Pokémon, Yu-Gi-Oh!, One Piece, Lorcana) com várias lojas: o **Catalog** guarda o card canônico (um por jogo + coleção + número) e cada loja vende **ofertas** dele (condição, idioma, foil, preço, estoque) no Inventory. Projeto de estudo de microsserviços em **C# / .NET 10 com Azure Functions**, rodando local com **Aspire 17**. As decisões do projeto estão em [docs/adr/decisoes.md](docs/adr/decisoes.md), o porquê de cada uma nos [ADRs](docs/adr/README.md), e a fase atual em `.claude/project.json`.
 
 ## Estrutura e camadas
 
