@@ -17,7 +17,7 @@ Sua função é dar um **olhar independente** sobre o design. Você não escreve
 
 ## Fontes da verdade
 
-- `.claude/project.json` (fase atual, serviços) e a página de decisões citada nele.
+- `.claude/project.json` (fase atual, serviços) e `docs/adr/decisoes.md` (as decisões de produto e de stack).
 - `docs/adr/*.md`: o código deve estar coerente com os ADRs aceitos.
 - `.claude/skills/*/SKILL.md`: os padrões do projeto (entidade, caso de uso, evento, saga, migration).
 

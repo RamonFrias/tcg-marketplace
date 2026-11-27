@@ -2,6 +2,8 @@
 
 Formato e regras em [0000](0000-registro-de-decisoes.md). Para registrar uma decisão nova, use a skill `adr`.
 
+As decisões de produto e de stack (as 37 do brainstorm) estão em [decisoes.md](decisoes.md); os ADRs abaixo explicam o porquê das decisões de arquitetura.
+
 | # | Título | Status | Data |
 |---|---|---|---|
 | [0000](0000-registro-de-decisoes.md) | Registro de decisões de arquitetura | Aceito | 2026-11-26 |
