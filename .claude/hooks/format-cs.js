@@ -14,8 +14,12 @@ L.main((evt) => {
     cwd: root,
     timeout: 35000,
   });
-  if (r.error && r.error.code === 'ENOENT') return; // dotnet não instalado: nada a fazer
+  if (r.error && r.error.code === 'ENOENT') {
+    L.emit({ systemMessage: `[format-cs] dotnet não encontrado no PATH: ${rel} não foi formatado.` });
+    return;
+  }
   if (!r.ok) {
-    L.emit({ systemMessage: `[format-cs] dotnet format falhou em ${rel}: ${r.out.trim().slice(0, 300)}` });
+    const why = r.error ? `${r.error.code || r.error.message} ` : '';
+    L.emit({ systemMessage: `[format-cs] dotnet format falhou em ${rel}: ${why}${r.out.trim().slice(0, 300)}` });
   }
 });

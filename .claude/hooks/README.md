@@ -1,7 +1,15 @@
 # Hooks do Claude Code · tcg-marketplace
 
-Registrados em `.claude/settings.json`. Todos são scripts Node (sem dependências) e falham em silêncio
-se algo interno der erro, para nunca travar o trabalho. Para depurar: `TCG_HOOKS_DEBUG=1`.
+Registrados em `.claude/settings.json`. Todos são scripts Node (sem dependências), e **nenhuma falha é silenciosa**:
+
+| Situação | Hooks de guarda (1, 2, 3, 8) | Hooks de aviso (os demais) |
+|---|---|---|
+| Regra violada | exit 2 + motivo no stderr: a ação é bloqueada | aviso no contexto ou `systemMessage` |
+| Erro interno (entrada inválida, exceção) | exit 2: bloqueia por segurança (fail-closed) | exit 1 + mensagem: aparece como erro, a ação segue |
+| O processo nem roda (Node ausente, timeout) | `onFailure: "block"` no settings bloqueia | erro reportado pelo Claude Code |
+| `dotnet` ausente | — | `systemMessage` avisando que não formatou/compilou |
+
+Para ver o stack trace de um erro interno: `TCG_HOOKS_DEBUG=1`.
 
 | # | Script | Evento | Efeito |
 |---|---|---|---|

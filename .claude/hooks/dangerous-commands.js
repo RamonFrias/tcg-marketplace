@@ -20,9 +20,21 @@ function tokenize(segment) {
 
 const isShortFlagWith = (arg, letter) => /^-[a-zA-Z]+$/.test(arg) && arg.includes(letter);
 
+// Status 0 = resposta; status 1 = "não há" (HEAD destacado / repositório sem commits).
+// Qualquer outra coisa (git ausente, timeout, pasta que não é repositório) é falha: o hook não
+// consegue saber a branch e, por ser de guarda, bloqueia em vez de deixar o commit/push passar.
+function gitQuery(dir, args) {
+  const r = L.run('git', ['-C', dir, ...args], { timeout: 5000 });
+  if (r.error || (r.code !== 0 && r.code !== 1)) {
+    const why = r.error ? (r.error.code || r.error.message) : `status ${r.code}: ${r.out.trim().slice(0, 200)}`;
+    throw new Error(`não foi possível consultar o git em ${dir} (${why})`);
+  }
+  return r;
+}
+
 function gitInfo(dir) {
-  const branch = L.run('git', ['-C', dir, 'symbolic-ref', '--short', '-q', 'HEAD'], { timeout: 5000 });
-  const head = L.run('git', ['-C', dir, 'rev-parse', '--verify', '-q', 'HEAD'], { timeout: 5000 });
+  const branch = gitQuery(dir, ['symbolic-ref', '--short', '-q', 'HEAD']);
+  const head = gitQuery(dir, ['rev-parse', '--verify', '-q', 'HEAD']);
   return { branch: branch.ok ? branch.out.trim() : null, hasHead: head.ok };
 }
 
@@ -175,4 +187,4 @@ L.main((evt) => {
 
     if (reason) return L.deny(`[dangerous-commands] Bloqueado: \`${segment}\`. Motivo: ${reason}`);
   }
-});
+}, { guard: true });
