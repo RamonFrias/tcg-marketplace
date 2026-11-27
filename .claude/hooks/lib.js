@@ -1,7 +1,10 @@
 'use strict';
 // Funções comuns dos hooks do tcg-marketplace.
-// Regra geral: um hook nunca pode quebrar o trabalho por erro interno. Qualquer exceção
-// sai em silêncio (exit 0). Para depurar, rode com TCG_HOOKS_DEBUG=1.
+// Nenhuma falha é silenciosa:
+//   - violação de regra (deny)            → exit 2 + motivo no stderr: a ação é bloqueada.
+//   - erro interno num hook de guarda     → exit 2 (fail-closed): na dúvida, bloqueia.
+//   - erro interno num hook de aviso      → exit 1 + mensagem no stderr: aparece como erro, não bloqueia.
+// Hooks de guarda chamam main(fn, { guard: true }).
 
 const fs = require('fs');
 const os = require('os');
@@ -15,25 +18,36 @@ const DEFAULT_SERVICES = [
 const SKIP_DIRS = new Set(['bin', 'obj', '.git', '.vs', '.idea', 'node_modules', 'TestResults']);
 
 function readInput() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let raw = '';
     process.stdin.setEncoding('utf8');
     process.stdin.on('data', (c) => { raw += c; });
     process.stdin.on('end', () => {
-      try { resolve(JSON.parse(raw || '{}')); } catch { resolve({}); }
+      try {
+        const evt = JSON.parse(raw);
+        if (!evt || typeof evt !== 'object') throw new Error('o JSON de entrada não é um objeto');
+        resolve(evt);
+      } catch (e) {
+        reject(new Error(`entrada do hook inválida (${e.message})`));
+      }
     });
-    process.stdin.on('error', () => resolve({}));
+    process.stdin.on('error', reject);
   });
 }
 
-function main(fn) {
-  readInput().then(async (evt) => {
-    try {
-      await fn(evt);
-    } catch (e) {
-      if (process.env.TCG_HOOKS_DEBUG) console.error(e);
-    }
-  });
+const scriptName = () => path.basename(process.argv[1] || 'hook');
+
+function main(fn, { guard = false } = {}) {
+  readInput()
+    .then((evt) => fn(evt))
+    .catch((e) => {
+      const effect = guard
+        ? 'Ação bloqueada por segurança: o hook de guarda não conseguiu verificar a regra.'
+        : 'A ação seguiu, mas o hook não rodou.';
+      process.stderr.write(`[${scriptName()}] falha interna: ${e && e.message ? e.message : e}. ${effect}\n`);
+      if (process.env.TCG_HOOKS_DEBUG && e && e.stack) process.stderr.write(`${e.stack}\n`);
+      process.exitCode = guard ? 2 : 1;
+    });
 }
 
 const toPosix = (p) => String(p || '').replace(/\\/g, '/');
@@ -88,7 +102,11 @@ function preToolDecision(decision, reason) {
     },
   });
 }
-const deny = (reason) => preToolDecision('deny', reason);
+// Bloqueio por exit 2 + stderr: a forma mais garantida de barrar a ferramenta (o motivo volta para o Claude).
+function deny(reason) {
+  process.stderr.write(`${reason}\n`);
+  process.exitCode = 2;
+}
 const ask = (reason) => preToolDecision('ask', reason);
 
 function addContext(eventName, text) {
@@ -125,10 +143,14 @@ function readState(evt, name, fallback) {
   try { return JSON.parse(fs.readFileSync(stateFile(evt, name), 'utf8')); } catch { return fallback; }
 }
 function writeState(evt, name, value) {
-  try { fs.writeFileSync(stateFile(evt, name), JSON.stringify(value)); } catch { /* ignora */ }
+  fs.writeFileSync(stateFile(evt, name), JSON.stringify(value));
 }
 function clearState(evt, name) {
-  try { fs.unlinkSync(stateFile(evt, name)); } catch { /* já não existe */ }
+  try {
+    fs.unlinkSync(stateFile(evt, name));
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e; // só "já não existe" é esperado
+  }
 }
 // true só na primeira vez que a chave aparece na sessão (evita repetir o mesmo aviso).
 function onceInSession(evt, key) {

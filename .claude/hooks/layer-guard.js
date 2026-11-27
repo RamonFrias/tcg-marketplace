@@ -99,4 +99,4 @@ L.main((evt) => {
   }
 
   if (problems.length) L.deny(`[layer-guard] ${rel}\n- ${problems.join('\n- ')}`);
-});
+}, { guard: true });

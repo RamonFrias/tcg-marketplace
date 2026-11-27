@@ -84,4 +84,4 @@ L.main((evt) => {
     'Consumidores em outros serviços podem quebrar. O caminho seguro é criar uma versão nova (ex.: StockReservedV2) ' +
     'e manter a antiga até todos migrarem. Aprove só se nenhum serviço usa isso ainda.'
   );
-});
+}, { guard: true });

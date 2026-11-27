@@ -106,4 +106,4 @@ L.main((evt) => {
       'Valores de exemplo como <senha>, ${VAR}, SAS_KEY_VALUE (emulador do Service Bus) e UseDevelopmentStorage=true são aceitos.'
     );
   }
-});
+}, { guard: true });

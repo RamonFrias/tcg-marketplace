@@ -93,7 +93,10 @@ function check(evt) {
       ? ['build', proj, '--nologo', '-v', 'q', '-clp:ErrorsOnly']
       : ['test', '--project', proj, '--no-progress']; // Microsoft.Testing.Platform (global.json): não aceita --nologo
     const r = L.run('dotnet', args, { cwd: root, timeout: Math.min(STEP_TIMEOUT_MS, remaining) });
-    if (r.error && r.error.code === 'ENOENT') return 'done'; // dotnet não instalado
+    if (r.error && r.error.code === 'ENOENT') {
+      L.emit({ systemMessage: '[build-test] dotnet não encontrado no PATH: build e testes não rodaram.' });
+      return 'done';
+    }
     if (r.error && r.error.code === 'ETIMEDOUT') { skipped.push(`${kind} ${name} (tempo esgotado)`); continue; }
     if (r.ok) { passed.push(`${kind} ${name}`); continue; }
     const detail = r.error ? `(${r.error.code || r.error.message}) ` : '';
@@ -108,11 +111,14 @@ function check(evt) {
     return 'done';
   }
 
+  const notRun = skipped.length ? `\n\nNão rodaram por falta de tempo: ${skipped.join(', ')}.` : '';
   const blocks = L.readState(evt, 'stopblocks', 0);
   if (blocks >= MAX_BLOCKS) {
     L.clearState(evt, 'stopblocks');
     L.emit({
-      systemMessage: `[build-test] Ainda há falhas depois de ${MAX_BLOCKS} tentativas de correção:\n${failures.join('\n\n').slice(0, 1500)}`,
+      systemMessage:
+        `[build-test] Ainda há falhas depois de ${MAX_BLOCKS} tentativas de correção:\n` +
+        `${failures.join('\n\n').slice(0, 1500)}${notRun}`,
     });
     return 'done';
   }
@@ -121,7 +127,7 @@ function check(evt) {
     decision: 'block',
     reason:
       `[build-test] Build ou testes dos serviços alterados falharam (tentativa ${blocks + 1}/${MAX_BLOCKS}). ` +
-      `Corrija antes de encerrar:\n\n${failures.join('\n\n').slice(0, 6000)}`,
+      `Corrija antes de encerrar:\n\n${failures.join('\n\n').slice(0, 6000)}${notRun}`,
   });
   return 'blocked';
 }
@@ -132,6 +138,12 @@ L.main((evt) => {
   try {
     status = check(evt);
   } finally {
-    L.writeState(evt, 'stop-result', { status, t: Date.now() });
+    // O resultado só serve ao aviso do notify.js. Se a gravação falhar, avisa no stderr sem trocar o
+    // exit code: a decisão (block) já foi emitida e o Claude Code só a lê com exit 0.
+    try {
+      L.writeState(evt, 'stop-result', { status, t: Date.now() });
+    } catch (e) {
+      process.stderr.write(`[build-test-on-stop] não gravou o resultado para o notify: ${e.message}\n`);
+    }
   }
 });

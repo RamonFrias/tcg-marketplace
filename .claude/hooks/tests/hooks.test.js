@@ -36,13 +36,86 @@ function runHook(name, root, input, env = {}) {
   try { json = r.stdout ? JSON.parse(r.stdout) : null; } catch { json = { raw: r.stdout }; }
   return { code: r.status, json, stderr: r.stderr, session };
 }
-const decision = (res) => res.json?.hookSpecificOutput?.permissionDecision;
+// Bloqueio = exit 2 (motivo no stderr). Qualquer outro código diferente de 0 aparece no resultado e quebra o teste.
+const decision = (res) => {
+  if (res.code === 2) return 'deny';
+  if (res.code !== 0) return `exit ${res.code}: ${res.stderr}`;
+  return res.json?.hookSpecificOutput?.permissionDecision;
+};
+function runRaw(name, rawInput, env = {}) {
+  return cp.spawnSync(process.execPath, [path.join(HOOKS, name)], {
+    input: rawInput,
+    encoding: 'utf8',
+    env: { ...process.env, CLAUDE_PROJECT_DIR: root, ...env },
+    timeout: 60000,
+  });
+}
 const context = (res) => res.json?.hookSpecificOutput?.additionalContext;
 const writeTool = (root, rel, content) => ({ tool_name: 'Write', tool_input: { file_path: path.join(root, rel), content } });
 const editTool = (root, rel, oldS, newS) => ({ tool_name: 'Edit', tool_input: { file_path: path.join(root, rel), old_string: oldS, new_string: newS } });
 
 const root = makeProject();
 test.after(() => fs.rmSync(root, { recursive: true, force: true }));
+
+// ---------- falhas nunca silenciosas ----------
+const GUARDS = ['protect-files.js', 'layer-guard.js', 'contracts-guard.js', 'dangerous-commands.js'];
+const ADVISORY = ['format-cs.js', 'tdd-reminder.js', 'adr-reminder.js', 'track-changes.js', 'build-test-on-stop.js', 'session-context.js', 'prompt-timer.js', 'notify.js'];
+
+test('hook de guarda com erro interno bloqueia (exit 2) e diz o motivo', () => {
+  for (const hook of GUARDS) {
+    for (const raw of ['{ isso nao e json', '', 'null']) {
+      const r = runRaw(hook, raw);
+      assert.equal(r.status, 2, `${hook} com entrada ${JSON.stringify(raw)}`);
+      assert.match(r.stderr, /falha interna/, hook);
+      assert.match(r.stderr, /bloqueada/, hook);
+    }
+  }
+});
+
+test('hook de aviso com erro interno sai com exit 1 e mensagem, sem bloquear', () => {
+  for (const hook of ADVISORY) {
+    const r = runRaw(hook, '{ isso nao e json');
+    assert.equal(r.status, 1, hook);
+    assert.match(r.stderr, /falha interna/, hook);
+  }
+});
+
+test('dangerous-commands bloqueia commit/push quando não consegue rodar o git', () => {
+  const noGit = { PATH: path.dirname(process.execPath), Path: path.dirname(process.execPath) };
+  for (const command of ['git commit -m x', 'git push']) {
+    const r = runHook('dangerous-commands.js', root, bash(command, root), noGit);
+    assert.equal(r.code, 2, command);
+    assert.match(r.stderr, /falha interna.*git/s, command);
+  }
+  // comandos que não dependem de consultar o git continuam liberados
+  assert.equal(runHook('dangerous-commands.js', root, bash('git status', root), noGit).code, 0);
+});
+
+test('violação sai com exit 2 e o motivo no stderr', () => {
+  const r = runHook('protect-files.js', root, writeTool(root, '.env', 'A=1'));
+  assert.equal(r.code, 2);
+  assert.match(r.stderr, /\[protect-files\] \.env guarda segredos/);
+});
+
+test('sem dotnet no PATH, format-cs e build-test avisam em vez de sair calados', () => {
+  const noDotnet = { PATH: path.dirname(process.execPath), Path: path.dirname(process.execPath) };
+  const fmt = runHook('format-cs.js', root, { tool_name: 'Edit', tool_input: { file_path: path.join(root, 'src/x/A.cs') } }, noDotnet);
+  assert.equal(fmt.code, 0);
+  assert.match(fmt.json.systemMessage, /dotnet não encontrado/);
+
+  write(root, 'src/services/Cart/Cart.Domain/Cart.Domain.csproj', '<Project Sdk="Microsoft.NET.Sdk" />');
+  const session = `nodotnet-${process.pid}`;
+  const env = { ...process.env, CLAUDE_PROJECT_DIR: root, ...noDotnet };
+  cp.spawnSync(process.execPath, [path.join(HOOKS, 'track-changes.js')], {
+    input: JSON.stringify({ session_id: session, cwd: root, tool_name: 'Write', tool_input: { file_path: path.join(root, 'src/services/Cart/Cart.Domain/A.cs') } }),
+    env, encoding: 'utf8',
+  });
+  const stop = cp.spawnSync(process.execPath, [path.join(HOOKS, 'build-test-on-stop.js')], {
+    input: JSON.stringify({ session_id: session, cwd: root, hook_event_name: 'Stop' }), env, encoding: 'utf8',
+  });
+  assert.equal(stop.status, 0);
+  assert.match(JSON.parse(stop.stdout).systemMessage, /dotnet não encontrado/);
+});
 
 // ---------- 1. protect-files ----------
 test('protect-files bloqueia .env real e libera .env.example', () => {
